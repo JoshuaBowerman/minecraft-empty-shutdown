@@ -1,5 +1,7 @@
 package com.xjb.autoshutdown;
 
+
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.command.CommandSource;
@@ -9,8 +11,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -20,6 +24,8 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLCommonLaunchHandler;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.network.FMLNetworkConstants;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,6 +58,7 @@ public class autoshutdown
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
     }
 
     private void setup(final FMLCommonSetupEvent event)
@@ -94,7 +101,9 @@ public class autoshutdown
             if(ticksSinceEmpty >= 20){
                 Boolean serverEmpty = server.getPlayerList().getPlayers().size() == 0;
                 if(serverEmpty){
-
+                    if(ticksSinceEmpty == 20){
+                        LOGGER.info("Server is empty. Shutting down in " + (maxEmptyTime - 1) + " seconds.");
+                    }
                     if((ticksSinceEmpty / 20) > maxEmptyTime){
                         //Shutdown
                         LOGGER.info("Server has been empty for too long. Shutting Down.");
