@@ -100,12 +100,13 @@ public class autoshutdown
                         LOGGER.info("Server is empty. Shutting down in " + (maxEmptyTime) + " seconds.");
                     }
                     if(ticksSinceEmpty % (20 * 30) == 0){
-                        LOGGER.info("Shutting down in {} seconds.",ticksSinceEmpty / 20);
+                        LOGGER.info("Shutting down in {} seconds.",maxEmptyTime - (ticksSinceEmpty / 20));
                     }
                     if((ticksSinceEmpty / 20) > maxEmptyTime){
                         //Shutdown
                         LOGGER.info("Server has been empty for too long. Shutting Down.");
                         ticksSinceEmpty = -1;
+                        server.getCommandManager().handleCommand(server.getCommandSource(),"/say Server Shutting Down");
                         server.getCommandManager().handleCommand(server.getCommandSource(),"/stop");
                     }
                 }else{
