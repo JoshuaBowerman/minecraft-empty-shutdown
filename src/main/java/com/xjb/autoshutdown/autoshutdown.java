@@ -97,7 +97,10 @@ public class autoshutdown
                 Boolean serverEmpty = server.getPlayerList().getPlayers().size() == 0;
                 if(serverEmpty){
                     if(ticksSinceEmpty == 20){
-                        LOGGER.info("Server is empty. Shutting down in " + (maxEmptyTime - 1) + " seconds.");
+                        LOGGER.info("Server is empty. Shutting down in " + (maxEmptyTime) + " seconds.");
+                    }
+                    if(ticksSinceEmpty % (20 * 30) == 0){
+                        LOGGER.info("Shutting down in {} seconds.",ticksSinceEmpty / 20);
                     }
                     if((ticksSinceEmpty / 20) > maxEmptyTime){
                         //Shutdown
