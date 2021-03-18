@@ -126,14 +126,12 @@ public class autoshutdown
             ret += hours + ":";
             ticks = (ticks % (20 * 60 * 60));
         }
-        if(time > (20 * 60)){ //Minutes
             int mins = ((ticks - (ticks % (20 * 60))) / (20 * 60));
             if(mins < 10){
                 ret += "0";
             }
             ret += mins + ":";
             ticks = (ticks % (20 * 60));
-        }
         if(time > (20)){ //Seconds
             int secs = ((ticks - (ticks % (20))) / (20));
             if(secs < 10){
