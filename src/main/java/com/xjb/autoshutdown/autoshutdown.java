@@ -97,10 +97,10 @@ public class autoshutdown
                 Boolean serverEmpty = server.getPlayerList().getPlayers().size() == 0;
                 if(serverEmpty){
                     if(ticksSinceEmpty == 20){
-                        LOGGER.info("Server is empty. Shutting down in " + (maxEmptyTime) + " seconds.");
+                        LOGGER.info("Server is empty. Shutting down in {}.",ticksToTime((maxEmptyTime * 20) - ticksSinceEmpty));
                     }
                     if(ticksSinceEmpty % (20 * 30) == 0){
-                        LOGGER.info("Shutting down in {} seconds.",maxEmptyTime - (ticksSinceEmpty / 20));
+                        LOGGER.info("Shutting down in {}.",ticksToTime((maxEmptyTime * 20) - ticksSinceEmpty));
                     }
                     if((ticksSinceEmpty / 20) > maxEmptyTime){
                         //Shutdown
@@ -118,4 +118,32 @@ public class autoshutdown
     }
 }
 
+    public String ticksToTime(int time){
+        int ticks = time;
+        String ret = "";
+        if(time > (20 * 60 * 60)){ //Hours
+            int hours = ((ticks - (ticks % (20 * 60 * 60))) / (20 * 60 * 60));
+            ret += hours + ":";
+            ticks = (ticks % (20 * 60 * 60));
+        }
+        if(time > (20 * 60)){ //Minutes
+            int mins = ((ticks - (ticks % (20 * 60))) / (20 * 60));
+            if(mins < 10){
+                ret += "0";
+            }
+            ret += mins + ":";
+            ticks = (ticks % (20 * 60));
+        }
+        if(time > (20)){ //Seconds
+            int secs = ((ticks - (ticks % (20))) / (20));
+            if(secs < 10){
+                ret += "0";
+            }
+            ret += secs;
+
+        }else{
+            ret = "< 1 Second";
+        }
+        return ret;
+    }
 }
