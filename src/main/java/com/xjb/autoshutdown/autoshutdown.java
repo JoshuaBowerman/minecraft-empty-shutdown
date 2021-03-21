@@ -2,6 +2,7 @@ package com.xjb.autoshutdown;
 
 
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.command.CommandSource;
@@ -43,6 +44,9 @@ public class autoshutdown
     public static int ticksSinceEmpty = -1;
     //Server Reference
     private static MinecraftServer server;
+
+    //Whether or not to do the countdown
+    private static Boolean countdown;
 
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
@@ -87,6 +91,7 @@ public class autoshutdown
         server = event.getServer();
         ticksSinceEmpty = 0;
         maxEmptyTime = config.timeEmptyBeforeShutdown.get();
+        countdown = config.doCountdown.get();
     }
     @SubscribeEvent
     public void ServerTickEvent(TickEvent.ServerTickEvent event){
@@ -97,10 +102,11 @@ public class autoshutdown
                 Boolean serverEmpty = server.getPlayerList().getPlayers().size() == 0;
                 if(serverEmpty){
                     if(ticksSinceEmpty == 20){
-                        LOGGER.info("Server is empty. Shutting down in {}.",ticksToTime((maxEmptyTime * 20) - ticksSinceEmpty));
+                            LOGGER.info("Server is empty. Shutting down in {}.",ticksToTime((maxEmptyTime * 20) - ticksSinceEmpty));
                     }
                     if(ticksSinceEmpty % (20 * 30) == 0){
-                        LOGGER.info("Shutting down in {}.",ticksToTime((maxEmptyTime * 20) - ticksSinceEmpty));
+                        if(countdown)
+                            LOGGER.info("Shutting down in {}.",ticksToTime((maxEmptyTime * 20) - ticksSinceEmpty));
                     }
                     if((ticksSinceEmpty / 20) > maxEmptyTime){
                         //Shutdown
